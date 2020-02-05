@@ -4,7 +4,7 @@ from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 import quandl
-quandl.ApiConfig.api_key="Q4uQPxfNSDW28sSj-5V9"
+quandl.ApiConfig.api_key=" api_key"
 
 ##
 """
@@ -40,7 +40,7 @@ portdf=stockpridownload(stockname_input)
 portdf.head()
 
 ##
-portdf.to_csv("/Users/wangjiatao/Documents/Project_ww/optimal_port_G/date.csv")
+portdf.to_csv("files/date.csv")
 
 
 
@@ -53,7 +53,7 @@ S = risk_models.sample_cov(portdf)
 ef = EfficientFrontier(mu, S)
 raw_weights = ef.max_sharpe()
 cleaned_weights = ef.clean_weights()
-ef.save_weights_to_file("/Users/wangjiatao/Documents/Project_ww/optimal_port_G/weights.csv")  # saves to file
+ef.save_weights_to_file("/files/weights.csv")  # saves to file
 print(cleaned_weights)
 ef.portfolio_performance(verbose=True)
 
