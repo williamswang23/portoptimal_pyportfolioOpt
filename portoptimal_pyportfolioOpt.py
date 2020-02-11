@@ -4,11 +4,13 @@ from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 import quandl
-quandl.ApiConfig.api_key=" api_key"
+
+
+quandl.ApiConfig.api_key="your API"
 
 ##
 """
-put into each stock name of US market which you want to analyse
+input all stock names of US listed companies which you want to analyse
 """
 stockname_input= ['AAPL','AMZN','GOOGL','FB','GM','AMD','MSFT','MCD','MMM','SHLD','WMT','INTC']
 
@@ -40,21 +42,53 @@ portdf=stockpridownload(stockname_input)
 portdf.head()
 
 ##
+def dict_print(df_dict):
+    for key,value in df_dict.items():
+        print('{key}:{value}'.format(key=key,value=value))
+    return
+##
+"""
 portdf.to_csv("files/date.csv")
-
+"""
 
 
 ##
 
 mu = expected_returns.mean_historical_return(portdf)
 S = risk_models.sample_cov(portdf)
+print(mu)
+print(S)
 
+
+##
 """max sharpe method optimal portfolio"""
-ef = EfficientFrontier(mu, S)
-raw_weights = ef.max_sharpe()
-cleaned_weights = ef.clean_weights()
-ef.save_weights_to_file("/files/weights.csv")  # saves to file
-print(cleaned_weights)
-ef.portfolio_performance(verbose=True)
+ef_maxsp= EfficientFrontier(mu, S)
+raw_weights = ef_maxsp.max_sharpe()
+cleaned_weights = ef_maxsp.clean_weights()
+"""ef.save_weights_to_file("/files/weights.csv")  # saves to file"""
 
+
+print("the weights of max sharpe portfolio")
+dict_print(cleaned_weights)
+ef_maxsp.portfolio_performance(verbose=True)
+
+##
+# A long/short portfolio maximising return for a target volatility of 10%,
+# with a shrunk covariance matrix risk model
+shrink = risk_models.CovarianceShrinkage(portdf)
+S = shrink.ledoit_wolf()
+ef = EfficientFrontier(mu, S, weight_bounds=(-1, 1))
+weights_ls = ef.efficient_risk(target_risk=0.10)
+print("the weights of long/short strategy portfolio is ")
+dict_print(weights_ls)
+ef.portfolio_performance(verbose=True)
+##
+# A market-neutral Markowitz portfolio finding the minimum volatility
+# for a target return of 20%
+ef = EfficientFrontier(mu, S, weight_bounds=(-1, 1))
+weights_mv = ef.efficient_return(target_return=0.20, market_neutral=True)
+print("the weights of minimum volatility portfolio is ")
+dict_print(weights_mv)
+ef.portfolio_performance(verbose=True)
+##
 
