@@ -1,3 +1,7 @@
+"""author:williams_wang"""
+
+
+
 ##
 import pandas as pd
 from pypfopt.efficient_frontier import EfficientFrontier
@@ -61,6 +65,7 @@ print(S)
 
 
 ##
+"""strategy-1"""
 """max sharpe method optimal portfolio"""
 ef_maxsp= EfficientFrontier(mu, S)
 raw_weights = ef_maxsp.max_sharpe()
@@ -73,6 +78,7 @@ dict_print(cleaned_weights)
 ef_maxsp.portfolio_performance(verbose=True)
 
 ##
+"""strategy-2"""
 # A long/short portfolio maximising return for a target volatility of 10%,
 # with a shrunk covariance matrix risk model
 shrink = risk_models.CovarianceShrinkage(portdf)
@@ -83,6 +89,7 @@ print("the weights of long/short strategy portfolio is ")
 dict_print(weights_ls)
 ef.portfolio_performance(verbose=True)
 ##
+"""strategy-3"""
 # A market-neutral Markowitz portfolio finding the minimum volatility
 # for a target return of 20%
 ef = EfficientFrontier(mu, S, weight_bounds=(-1, 1))
